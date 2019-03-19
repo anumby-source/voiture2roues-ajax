@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   	<script src="https://cdnjs.cloudflare.com/ajax/libs/roundSlider/1.3.3/roundslider.min.js"></script>
+   	<link href="https://cdnjs.cloudflare.com/ajax/libs/roundSlider/1.3.3/roundslider.min.css" rel="stylesheet" />
+</head>
+<body>
+
+
+<style type="text/css">
+	#rdVitesse {
+		display: inline-block;
+		width: 200px;
+	}
+	#rdDirectoion {
+		width: 400px;
+	}
+
+	.box {
+		display: inline-block;
+	    padding: 10px 30px;
+	    border: 1px dotted;
+	    margin-right: 20px;
+	    overflow: hidden;"
+	}
+</style>
+
+<img src="https://voiture.kidioui.fr/image/lexique/virtual-cockpit.jpg" ><br>
+<div class="box">Vitesse<br><div id="rdVitesse"></div></div>
+<div class="box">Gauche/Droite<br><div id="rdDirection"></div></div>
+
+
+<br style='clear:left'>
+<!--br><br><br><br>
+Vitesse Globale : <input type="range" id="motor-vitesse" value="50" min="0" max="100" step="1" /><span id="logmotor-vitesse">log-g</span>
+<br>
+Gauche/Droite<input type="range" id="motor-gd" value="0" min="-100" max="100" step="10" /><span id='logmotor-gd'>log-gd</span>
+<br>
+<input type="text" class="dial" value="75" data-displayPrevious=true data-fgColor="#00A8A9" data-thickness=.3 value="29">
+<br-->
+
+<script>
+     $(document).ready(function () {
+
+        	$("#rdVitesse").roundSlider({
+                value: 50,
+                circleShape:"quarter-top-left",
+                sliderType: "min-range",
+            });
+            $("#rdDirection").roundSlider({
+                value: 0,
+                circleShape:"half-top",
+                min:-100,
+                max:100,
+            });
+        });
+
+	$("#rdVitesse").on("change", function (e) {
+		var valeur=e.value
+    	console.log("Vitesse="+valeur);
+    	$.ajax({url: "/setVitesse?val="+Math.round(valeur,0), success: function(result){
+	    	console.log("return ajax vitesse="+result);
+	    }});
+	
+	});
+   
+	$("#rdDirection").on("change", function (e) {
+		var valeur=e.value
+		console.log("Gauche/Droite="+valeur);
+	  	
+	  	$.ajax({url: "/setMotor?val="+Math.round(valeur,0), success: function(result){
+     		console.log("return ajax Direction="+result);
+	    }});
+	
+	});
+
+	$(document).on('input change', '#motor-vitesse', function() {
+		var valeur=$(this).val();
+		console.log("Vitesse="+valeur);
+	    $('#logmotor-g').html( valeur);
+	    $.ajax({url: "/setVitesse?val="+Math.round(valeur,0), success: function(result){
+	    	console.log("return ajax"+result);
+	    }});
+	});
+	$(document).on('input change', '#motor-gd', function() {
+		var valeur=$(this).val();
+	    console.log("Gauche/Droite="+valeur);
+	    $('#logmotor-gd').html(valeur);
+        $.ajax({url: "/setMotor?val="+Math.round(valeur,0), success: function(result){
+                
+            }});
+	});	
+
+
+</script>
+
+
